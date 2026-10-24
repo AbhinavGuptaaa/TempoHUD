@@ -118,10 +118,10 @@ struct ContentView: View {
         }
         .padding(24)
         .frame(width: 420)
-        .onChange(of: windowManager.opacity) { _ in
+        .onChange(of: windowManager.opacity) {
             windowManager.applyAppearance()
         }
-        .onChange(of: windowManager.hudSize) { _ in
+        .onChange(of: windowManager.hudSize) {
             windowManager.applyAppearance()
         }
     }

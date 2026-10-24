@@ -6,6 +6,7 @@
 //
 
 
+
 import SwiftUI
 
 struct ContentView: View {
@@ -21,23 +22,84 @@ struct ContentView: View {
     }
 
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 20) {
             Image(systemName: "timer")
-                .font(.system(size: 38, weight: .light))
+                .font(.system(size: 34, weight: .light))
                 .foregroundStyle(.blue)
 
-            VStack(spacing: 6) {
+            VStack(spacing: 5) {
                 Text("Tempo HUD")
-                    .font(.system(size: 27, weight: .semibold))
+                    .font(.system(size: 26, weight: .semibold))
 
-                Text("Set a timer. Stay in your flow.")
+                Text("Set your timer and personalize the overlay.")
+                    .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
 
-            HStack(spacing: 12) {
+            HStack(spacing: 8) {
                 timePicker("Hours", value: $hours)
                 timePicker("Minutes", value: $minutes)
                 timePicker("Seconds", value: $seconds)
+            }
+
+            Divider()
+
+            VStack(alignment: .leading, spacing: 15) {
+                Label("HUD Appearance", systemImage: "slider.horizontal.3")
+                    .font(.headline)
+
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        Text("Opacity")
+                        Spacer()
+                        Text("\(Int(windowManager.opacity * 100))%")
+                            .monospacedDigit()
+                            .foregroundStyle(.secondary)
+                    }
+
+                    Slider(
+                        value: $windowManager.opacity,
+                        in: 0.25...1.0,
+                        step: 0.05
+                    )
+
+                    HStack {
+                        Text("More transparent")
+                        Spacer()
+                        Text("More solid")
+                    }
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                }
+
+                HStack {
+                    Text("HUD Size")
+                    Spacer()
+
+                    Picker("HUD Size", selection: $windowManager.hudSize) {
+                        ForEach(HUDSize.allCases) { size in
+                            Text(size.rawValue).tag(size)
+                        }
+                    }
+                    .labelsHidden()
+                    .frame(width: 140)
+                }
+
+                HStack {
+                    Text("Background")
+                    Spacer()
+
+                    Picker(
+                        "Background",
+                        selection: $windowManager.backgroundStyle
+                    ) {
+                        ForEach(HUDBackgroundStyle.allCases) { style in
+                            Text(style.rawValue).tag(style)
+                        }
+                    }
+                    .labelsHidden()
+                    .frame(width: 160)
+                }
             }
 
             Button {
@@ -53,20 +115,22 @@ struct ContentView: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             .disabled(totalSeconds == 0)
-
-            Text("Your timer will float above other windows.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
         }
-        .padding(28)
-        .frame(width: 400, height: 370)
+        .padding(24)
+        .frame(width: 420)
+        .onChange(of: windowManager.opacity) { _ in
+            windowManager.applyAppearance()
+        }
+        .onChange(of: windowManager.hudSize) { _ in
+            windowManager.applyAppearance()
+        }
     }
 
     private func timePicker(
         _ title: String,
         value: Binding<Int>
     ) -> some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 6) {
             Text(title)
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -78,7 +142,7 @@ struct ContentView: View {
                 }
             }
             .labelsHidden()
-            .frame(width: 100)
+            .frame(width: 105)
         }
         .frame(maxWidth: .infinity)
     }

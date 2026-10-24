@@ -6,21 +6,39 @@
 //
 
 
+
 import SwiftUI
 
 struct HUDView: View {
     @EnvironmentObject var timerModel: TimerModel
     @EnvironmentObject var windowManager: HUDWindowManager
 
+    private var foregroundColor: Color {
+        windowManager.backgroundStyle == .lightGlass
+            ? .black.opacity(0.85)
+            : .white
+    }
+
+    private var secondaryColor: Color {
+        foregroundColor.opacity(0.7)
+    }
+
+    private var backgroundColor: Color {
+        switch windowManager.backgroundStyle {
+        case .darkGlass:
+            return .black.opacity(0.48)
+        case .frostedGlass:
+            return .clear
+        case .lightGlass:
+            return .white.opacity(0.55)
+        }
+    }
+
     var body: some View {
-        VStack(spacing: 14) {
+        VStack(spacing: 12) {
             HStack {
                 Circle()
-                    .fill(
-                        timerModel.hasFinished
-                            ? Color.orange
-                            : Color.green
-                    )
+                    .fill(timerModel.hasFinished ? .orange : .green)
                     .frame(width: 7, height: 7)
 
                 Text(
@@ -32,7 +50,7 @@ struct HUDView: View {
                 )
                 .font(.system(size: 10, weight: .semibold))
                 .tracking(2)
-                .foregroundStyle(.white.opacity(0.7))
+                .foregroundStyle(secondaryColor)
 
                 Spacer()
 
@@ -41,9 +59,9 @@ struct HUDView: View {
                 } label: {
                     Image(systemName: "xmark")
                         .font(.system(size: 11, weight: .bold))
-                        .foregroundStyle(.white.opacity(0.7))
+                        .foregroundStyle(secondaryColor)
                         .frame(width: 24, height: 24)
-                        .background(.white.opacity(0.10))
+                        .background(foregroundColor.opacity(0.10))
                         .clipShape(Circle())
                 }
                 .buttonStyle(.plain)
@@ -52,14 +70,15 @@ struct HUDView: View {
             Text(timerModel.formattedTime)
                 .font(
                     .system(
-                        size: 51,
+                        size: windowManager.hudSize.timerFontSize,
                         weight: .light,
                         design: .rounded
                     )
                 )
                 .monospacedDigit()
-                .foregroundStyle(.white)
-                .contentTransition(.numericText())
+                .foregroundStyle(foregroundColor)
+                .minimumScaleFactor(0.65)
+                .lineLimit(1)
 
             HStack(spacing: 12) {
                 Button {
@@ -77,8 +96,8 @@ struct HUDView: View {
                     )
                     .font(.system(size: 12, weight: .medium))
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 9)
-                    .background(.white.opacity(0.14))
+                    .padding(.vertical, 8)
+                    .background(foregroundColor.opacity(0.12))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
                 .buttonStyle(.plain)
@@ -93,31 +112,36 @@ struct HUDView: View {
                     Image(systemName: "arrow.counterclockwise")
                         .font(.system(size: 13, weight: .medium))
                         .frame(width: 38, height: 34)
-                        .background(.white.opacity(0.10))
+                        .background(foregroundColor.opacity(0.10))
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
                 .buttonStyle(.plain)
             }
-            .foregroundStyle(.white)
+            .foregroundStyle(foregroundColor)
         }
-        .padding(18)
-        .frame(width: 320, height: 170)
+        .padding(16)
+        .frame(
+            width: windowManager.hudSize.dimensions.width,
+            height: windowManager.hudSize.dimensions.height
+        )
         .background {
             ZStack {
                 RoundedRectangle(cornerRadius: 22)
                     .fill(.ultraThinMaterial)
 
                 RoundedRectangle(cornerRadius: 22)
-                    .fill(Color.black.opacity(0.45))
+                    .fill(backgroundColor)
 
                 RoundedRectangle(cornerRadius: 22)
                     .strokeBorder(
-                        .white.opacity(0.18),
+                        foregroundColor.opacity(0.18),
                         lineWidth: 1
                     )
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: 22))
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(
+            windowManager.backgroundStyle == .lightGlass ? .light : .dark
+        )
     }
 }

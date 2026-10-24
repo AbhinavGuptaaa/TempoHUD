@@ -91,7 +91,7 @@ final class TimerModel: ObservableObject {
             withTimeInterval: 0.2,
             repeats: true
         ) { [weak self] _ in
-            Task { @MainActor in
+            Task { @MainActor [weak self] in
                 self?.updateCountdown()
             }
         }

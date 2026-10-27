@@ -12,7 +12,9 @@ Customize the timer's appearance, choose from different sizes and background sty
 
 Configure your countdown, adjust transparency, and customize the HUD before starting your timer.
 
-![TempoHUD Setup Window](screenshots/setup-window.png)
+<p align="center">
+  <img src="screenshots/setup-window.png" alt="TempoHUD Setup Window" width="500">
+</p>
 
 ### Floating Countdown HUD
 
@@ -24,7 +26,9 @@ Keep your countdown visible above other windows with a clean, floating timer.
 
 Access timer controls and presets from the macOS menu bar.
 
-![TempoHUD Menu Bar](screenshots/menu-bar.png)
+<p align="center">
+  <img src="screenshots/menu-bar.png" alt="TempoHUD Menu Bar" width="350">
+</p>
 
 ## Features
 

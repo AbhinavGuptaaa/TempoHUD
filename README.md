@@ -1,10 +1,3 @@
-//
-//  README.md
-//  TempoHUD
-//
-//  Created by user@77 on 28/10/26.
-//
-
 # TempoHUD
 
 **A minimal, transparent, always-on-top countdown timer for macOS.**
